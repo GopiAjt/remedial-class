@@ -1,0 +1,18 @@
+total number of marks is 50 and the average marks is 20
+before runing the remedial.py install all the packages
+
+win+R
+type cmd
+Ensure you have pip and python installed.
+pip install pandas scikit-learn
+pip install openpyxl
+
+
+Remedial Dataset.xlsx this file is used for training the modal
+    for Decision Tree model => DecisionTreeClassifier is used from sklearn packages
+    for Naive Bayes model => GaussianNB is used from sklearn packages
+
+
+test-remedial.xlsx this file is used for prediction of the students you can enter your own data for prediction
+    if the prediction of the model is '1' then the student is slow lerner
+    if the prediction of the model is '0' then the student is not a slow lerner

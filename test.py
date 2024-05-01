@@ -10,6 +10,8 @@ import smtplib
 import time  # for delay
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 
 
 # Load the data from an Excel file
@@ -112,6 +114,30 @@ def display_data(data):
             cell_label.grid(row=row_index + 1, column=col_index, sticky="nsew", padx=1, pady=1)
             cell_label.config(relief="groove", borderwidth=1)
 
+    # Display model metrics
+    dt_accuracy_label = tk.Label(table_frame, text=f"Decision Tree Accuracy: {accuracy_score(df[target], dt_model.predict(df[features])):.2f}")
+    dt_accuracy_label.grid(row=len(data) + 2, column=0, columnspan=4, sticky="nsew", padx=1, pady=1)
+
+    nb_accuracy_label = tk.Label(table_frame, text=f"Naive Bayes Accuracy: {accuracy_score(df[target], nb_model.predict(df[features])):.2f}")
+    nb_accuracy_label.grid(row=len(data) + 3, column=0, columnspan=4, sticky="nsew", padx=1, pady=1)
+
+    dt_precision_label = tk.Label(table_frame, text=f"Decision Tree Precision: {precision_score(df[target], dt_model.predict(df[features])):.2f}")
+    dt_precision_label.grid(row=len(data) + 4, column=0, columnspan=4, sticky="nsew", padx=1, pady=1)
+
+    nb_precision_label = tk.Label(table_frame, text=f"Naive Bayes Precision: {precision_score(df[target], nb_model.predict(df[features])):.2f}")
+    nb_precision_label.grid(row=len(data) + 5, column=0, columnspan=4, sticky="nsew", padx=1, pady=1)
+
+    dt_recall_label = tk.Label(table_frame, text=f"Decision Tree Recall: {recall_score(df[target], dt_model.predict(df[features])):.2f}")
+    dt_recall_label.grid(row=len(data) + 6, column=0, columnspan=4, sticky="nsew", padx=1, pady=1)
+
+    nb_recall_label = tk.Label(table_frame, text=f"Naive Bayes Recall: {recall_score(df[target], nb_model.predict(df[features])):.2f}")
+    nb_recall_label.grid(row=len(data) + 7, column=0, columnspan=4, sticky="nsew", padx=1, pady=1)
+
+    dt_f1_label = tk.Label(table_frame, text=f"Decision Tree F1-Score: {f1_score(df[target], dt_model.predict(df[features])):.2f}")
+    dt_f1_label.grid(row=len(data) + 8, column=0, columnspan=4, sticky="nsew", padx=1, pady=1)
+
+    nb_f1_label = tk.Label(table_frame, text=f"Naive Bayes F1-Score: {f1_score(df[target], nb_model.predict(df[features])):.2f}")
+    nb_f1_label.grid(row=len(data) + 9, column=0, columnspan=4, sticky="nsew", padx=1, pady=1)
     # Create buttons
     button_frame = tk.Frame(window)
     button_frame.pack(padx=10, pady=10)
@@ -121,7 +147,7 @@ def display_data(data):
     button2.grid(row=0, column=1, padx=5, pady=5)
 
     
-
+    
     window.mainloop()
 
 
@@ -232,9 +258,9 @@ def button2_clicked():
     # Close the loading window after a short delay
     loading_window.after(2000, loading_window.destroy)  # Close after 2 seconds
 
-
+print(test_df)
 # Create a figure and a subplot
-fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
+fig, ax = plt.subplots(figsize=(3, 2), dpi=100)
 
 # Plot a bar graph for '1st Year INA1' and '1st Year INA2'
 test_df.plot(x='Name', y=['1st Year INA1', '1st Year INA2'], kind='bar', ax=ax)
@@ -250,7 +276,7 @@ canvas_widget = canvas_graph.get_tk_widget()
 canvas_widget.pack(fill=tk.BOTH, expand=True)
 
 # Create a figure and a subplot for 2nd Year INA
-fig2, ax2 = plt.subplots(figsize=(6, 4), dpi=100)
+fig2, ax2 = plt.subplots(figsize=(3, 2), dpi=100)
 
 # Plot a bar graph for '2nd Year INA1' and '2nd Year INA2'
 test_df.plot(x='Name', y=['2nd Year INA1', '2nd Year INA2'], kind='bar', ax=ax2)
@@ -264,7 +290,6 @@ canvas_widget2 = canvas_graph2.get_tk_widget()
 
 # Pack the canvas
 canvas_widget2.pack(fill=tk.BOTH, expand=True)
-
 
 # Assuming you have your test data in 'test_df' after preprocessing
 display_data(test_df)

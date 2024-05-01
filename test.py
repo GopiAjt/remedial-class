@@ -260,7 +260,7 @@ def button2_clicked():
 
 print(test_df)
 # Create a figure and a subplot
-fig, ax = plt.subplots(figsize=(3, 2), dpi=100)
+fig, ax = plt.subplots(figsize=(3, 2), dpi=100, constrained_layout=True)
 
 # Plot a bar graph for '1st Year INA1' and '1st Year INA2'
 test_df.plot(x='Name', y=['1st Year INA1', '1st Year INA2'], kind='bar', ax=ax)
@@ -276,7 +276,7 @@ canvas_widget = canvas_graph.get_tk_widget()
 canvas_widget.pack(fill=tk.BOTH, expand=True)
 
 # Create a figure and a subplot for 2nd Year INA
-fig2, ax2 = plt.subplots(figsize=(3, 2), dpi=100)
+fig2, ax2 = plt.subplots(figsize=(3, 2), dpi=100, constrained_layout=True)
 
 # Plot a bar graph for '2nd Year INA1' and '2nd Year INA2'
 test_df.plot(x='Name', y=['2nd Year INA1', '2nd Year INA2'], kind='bar', ax=ax2)

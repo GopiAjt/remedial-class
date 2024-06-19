@@ -34,20 +34,15 @@ label_encoder = LabelEncoder()
 df['Extra curricular'] = label_encoder.fit_transform(df['Extra curricular'])
 df['Placements Status'] = label_encoder.fit_transform(df['Placements Status'])
 
+# Calculate average of IA marks
+df['Average IA'] = df[['1st Year INA1', '1st Year INA2', '2nd Year INA1', '2nd Year INA2']].mean(axis=1)
+
 # Define the features and target variable
-features = ['1st Year INA1', '1st Year INA2', '2nd Year INA1', '2nd Year INA2', 
-            'No. of Backlogs', 'Extra curricular', 'Placements Status']
+features = ['Average IA', 'No. of Backlogs', 'Extra curricular', 'Placements Status']
 target = 'Slow Learner'
 
-# Assume a student is a slow learner if any of the INA scores is less than 20, they have backlogs,
-# or they didn't participate in extracurricular activities or didn't get placed
-df[target] = df.apply(lambda row: 1 if ((row['1st Year INA1'] < 20) or
-                                         (row['1st Year INA2'] < 20) or
-                                         (row['2nd Year INA1'] < 20) or
-                                         (row['2nd Year INA2'] < 20) or 
-                                         (row['No. of Backlogs'] > 0) or
-                                         (row['Extra curricular'] == 0) or
-                                         (row['Placements Status'] == 0)) else 0, axis=1)
+# Update Slow Learner based on average IA marks and number of backlogs
+df[target] = df.apply(lambda row: 1 if (row['Average IA'] < 15) and (row['No. of Backlogs'] > 0) else 0, axis=1)
 
 
 # Create the Decision Tree model
@@ -65,7 +60,8 @@ nb_model.fit(df[features], df[target])
 # Load test data from another Excel file
 test_df = pd.read_excel('test-remedial.xlsx')
 
-# Handle missing values and encode categorical variables for test data similar to the training data (above)
+# Calculate average IA for test data
+test_df['Average IA'] = test_df[['1st Year INA1', '1st Year INA2', '2nd Year INA1', '2nd Year INA2']].mean(axis=1)
 
 # Add a 'Slow Learner' prediction column to the test data using the Decision Tree model
 test_df['dt_Slow Learner'] = dt_model.predict(test_df[features])
@@ -142,7 +138,7 @@ def display_data(data):
     button_frame = tk.Frame(window)
     button_frame.pack(padx=10, pady=10)
     button1 = tk.Button(button_frame, text="send mail to Parents", command=button1_clicked)
-    button2 = tk.Button(button_frame, text="sent placement links", command=button2_clicked)
+    button2 = tk.Button(button_frame, text="send placement links", command=button2_clicked)
     button1.grid(row=0, column=0, padx=5, pady=5)
     button2.grid(row=0, column=1, padx=5, pady=5)
 
@@ -202,7 +198,7 @@ def button1_clicked():
 
 def button2_clicked():
     # Filter slow learners based on the 'Slow Learner' column
-    slow_learners = test_df[test_df['Slow Learner'] == 1]['Email ID']
+    slow_learners = test_df[test_df['Placements Status'] == 0]['Email ID']
 
     # Create a new window for the loading screen
     loading_window = tk.Toplevel(window)
@@ -217,7 +213,7 @@ def button2_clicked():
 
     # Send email to each slow learner (replace with your email configuration)
     sender_email = "capturenow.in@gmail.com"  # Replace with your email address
-    sender_password = "ggasmkitfqdibsal"  # Replace with your email password,
+    sender_password = "zuyfvppkkrokqskg"  # Replace with your email password,
     smtp_server = "smtp.gmail.com"  # Replace with your SMTP server (e.g., 'smtp.gmail.com')
     port = 587  # Replace with your SMTP port (e.g., 587 for Gmail)
 
@@ -252,13 +248,15 @@ def button2_clicked():
                                                                                 'Name'].values[0]))
 
     progress.stop()  # Stop progress bar after all emails sent
-    confirmation_message = tk.Label(loading_window, text="Emails sent successfully to slow learners.")
+    confirmation_message = tk.Label(loading_window, text="Emails sent successfully for placements")
     confirmation_message.pack(padx=10, pady=10)
 
     # Close the loading window after a short delay
     loading_window.after(2000, loading_window.destroy)  # Close after 2 seconds
 
 print(test_df)
+# Print results for debugging
+print(test_df[['Name', 'dt_Slow Learner', 'nb_Slow Learner', 'Slow Learner']])
 # Create a figure and a subplot
 fig, ax = plt.subplots(figsize=(3, 2), dpi=100, constrained_layout=True)
 
